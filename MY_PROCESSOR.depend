@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1429299495 source:/home/kkostya/Dropbox/fun/MY_PROCESSOR/main.cpp
+	"misc.h"
+	"main.h"
+
+1429299820 source:/home/kkostya/Dropbox/fun/MY_PROCESSOR/misc.cpp
+	"main.h"
+
+1429298898 /home/kkostya/Dropbox/fun/MY_PROCESSOR/main.h
+	<iostream>
+	<string>
+	<cstring>
+	<unistd.h>
+
+1429299507 /home/kkostya/Dropbox/fun/MY_PROCESSOR/misc.h
+	"main.h"
+
