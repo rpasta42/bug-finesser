@@ -6,3 +6,18 @@ void print_bin(uint64_t n) {
    }
    cout << endl;
 }
+
+vecStr &split(const string &s, char delim, vecStr &elems) {
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+vecStr split(const string &s, char delim) {
+    vecStr elems;
+    split(s, delim, elems);
+    return elems;
+}

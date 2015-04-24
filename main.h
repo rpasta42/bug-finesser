@@ -3,11 +3,17 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+//#include <regex>
+#include <sstream>
 #include <cstring>
 #include <unistd.h>
 
 using namespace std;
 
+typedef vector<string> vecStr;
+
+vecStr split(const string &s, char delim);
 void print_bin(uint64_t n);
 
 typedef uint8_t Instr;
