@@ -25,6 +25,8 @@ typedef uint8_t Reg;
 typedef uint16_t Mem;
 typedef uint32_t Const;
 
+
+//TODO: mul
 enum {
    //NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP
    NOP, HALT,

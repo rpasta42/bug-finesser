@@ -89,6 +89,13 @@ vector<uint64_t> kasm(string s) {
          bool addr2 = (lex[2][0] == '@');
          if (!reg2 && !addr2)
             assert(lex[2][0] == '#');
+
+         /*if (op == "MOV")
+         LEA
+         ADD
+         SUB
+         MUL*/
+
       }
       else {
          error(op + " cannot take " + string(numOp) + " arguments");
