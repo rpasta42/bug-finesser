@@ -1,18 +1,6 @@
 #include "main.h"
 #include "asm_parser.h"
 
-enum {
-   //NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP
-   NOP, HALT,
-   MOVrr, MOVrm, MOVmr, MOVrc, MOVmc,
-   PUSHr, PUSHm, PUSHc,
-   POPr, POPm,
-   LEArm,
-   ADDrr, ADDrm, ADDmr, ADDrc, ADDmc,
-   SUBrr, SUBrm, SUBmr, SUBrc, SUBmc,
-   INCr, INCm,
-   DECr, DECm
-};
 
 struct Machine {
    uint64_t* mem; //mem[65536]

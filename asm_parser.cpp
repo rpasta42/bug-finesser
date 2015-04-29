@@ -37,22 +37,59 @@ vector<uint64_t> kasm(string s) {
          if (!reg && !addr)
             assert(lex[1][0] == '#');
 
+         int i;
          if (op == "push") {
             if (reg)
-               ret.push_back(inst(PUSHr, stoi(lex[1].erase(0, 1))));
-            else if (addr) {
+               i = PUSHr;
+            else if (addr)
+               i = PUSHm;
+            else
+               i = PUSHc;
 
-            }
          }
-
-
-         if (reg) {
-         //if (op == "push")
+         else if (op == "pop") {
+            if (reg)
+               i = POPr;
+            else if (addr)
+               i = POPm;
+            else assert(0);
          }
-         if ()
+         else if (op == "inc") {
+            if (reg)
+               i = INCr;
+            else if (addr)
+               i = INCm;
+            else assert(0);
 
+         }
+         else if (op == "dec") {
+            if (reg)
+               i = DECr;
+            else if (addr)
+               i = DECm;
+            else assert(0);
+         }
+         else
+            assert(string("unsupported instruction") == string("fail"));
+
+         if (reg)
+            ret.push_back(inst(i, (Reg)stoi(lex[1].erase(0, 1))).uint64);
+         else if (addr)
+            ret.push_back(inst(i, (Mem)stoi(lex[1].erase(0, 1))).uint64);
+         else
+            ret.push_back(inst(i, (Const)stoi(lex[1].erase(0, 1))).uint64);
       }
-      else if (numOp == 2) {}
+      else if (numOp == 2) {
+         bool reg1  = (lex[1][0] == '%');
+         bool addr1 = (lex[1][0] == '@');
+         if (!reg1 && !addr1)
+            assert(lex[1][0] == '#');
+
+         bool reg2  = (lex[2][0] == '%');
+         bool addr2 = (lex[2][0] == '@');
+         if (!reg2 && !addr2)
+            assert(lex[2][0] == '#');
+      }
       else {
          error(op + " cannot take " + string(numOp) + " arguments");
       }

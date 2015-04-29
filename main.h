@@ -8,8 +8,12 @@
 #include <sstream>
 #include <cstring>
 #include <unistd.h>
+#include <assert.h>
 
 using namespace std;
+
+
+#define error(x) assert(0);
 
 typedef vector<string> vecStr;
 
@@ -20,6 +24,19 @@ typedef uint8_t Instr;
 typedef uint8_t Reg;
 typedef uint16_t Mem;
 typedef uint32_t Const;
+
+enum {
+   //NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP
+   NOP, HALT,
+   MOVrr, MOVrm, MOVmr, MOVrc, MOVmc,
+   PUSHr, PUSHm, PUSHc,
+   POPr, POPm,
+   LEArm,
+   ADDrr, ADDrm, ADDmr, ADDrc, ADDmc,
+   SUBrr, SUBrm, SUBmr, SUBrc, SUBmc,
+   INCr, INCm,
+   DECr, DECm
+};
 
 struct cmd {
    union {
@@ -90,9 +107,16 @@ inline cmd inst(Instr i, Reg r1, Reg r2) {
    ret.rr = {i, r1, r2};
    return ret;
 }
-/*cmd_rr
-cmd_rm
-cmd_mr*/
+inline cmd inst(Instr i, Reg r, Mem m) {
+   cmd ret;
+   ret.rm = {i, r, m};
+   return ret;
+}
+inline cmd inst(Instr i, Mem m, Reg r) {
+   cmd ret;
+   ret.mr = {i, m, r};
+   return ret;
+}
 inline cmd inst(Instr i, Reg r, Const c) {
    cmd ret;
    ret.rc = {i, r, c};
