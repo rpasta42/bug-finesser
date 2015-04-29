@@ -16,12 +16,53 @@ typedef vector<string> vecStr;
 vecStr split(const string &s, char delim);
 void print_bin(uint64_t n);
 
-typedef uint8_t Instr;
-typedef uint8_t Reg;
-typedef uint16_t Mem;
-typedef uint32_t Const;
 
-struct cmd {
+struct Op {
+   union {
+      uint64_t uint64;
+      uint8_t i;
+      struct {
+         uint8_t i;
+         uint8_t r;
+      } r;
+      struct {
+         uint8_t i;
+         uint16_t m;
+      } m;
+      struct {
+         uint8_t i;
+         uint32_t c;
+      } c;
+      struct {
+         uint8_t i;
+         uint8_t r1;
+         uint8_t r2;
+      } rr;
+      struct {
+         uint8_t i;
+         uint8_t r;
+         uint16_t a;
+      } rm;
+      struct {
+         uint8_t i;
+         uint16_t a;
+         uint8_t r;
+      } mr;
+      struct {
+         uint8_t i;
+         uint8_t r;
+         uint32_t c;
+      } rc;
+      struct {
+         uint8_t i;
+         uint16_t a;
+         uint32_t c;
+      } mc;
+   };
+};
+
+
+/*struct Cmd {
    union {
       struct {
          uint8_t i;
@@ -63,8 +104,9 @@ struct cmd {
       uint64_t uint64;
       uint8_t i;
    };
-};
+};*/
 
+/*
 inline cmd inst(Instr i) {
    cmd ret;
    ret.i = i;
@@ -90,9 +132,9 @@ inline cmd inst(Instr i, Reg r1, Reg r2) {
    ret.rr = {i, r1, r2};
    return ret;
 }
-/*cmd_rr
-cmd_rm
-cmd_mr*/
+//cmd_rr
+//cmd_rm
+//cmd_mr
 inline cmd inst(Instr i, Reg r, Const c) {
    cmd ret;
    ret.rc = {i, r, c};
@@ -102,7 +144,8 @@ inline cmd inst(Instr i, Mem m, Const c) {
    cmd ret;
    ret.mc = {i, m, c};
    return ret;
-}
+}*/
+
 #endif // MAIN_H_INCLUDED
 
 

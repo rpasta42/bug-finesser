@@ -7,9 +7,7 @@ in Machine execution, instead of doing manual comparison if (MOVrr) r[c.rr.r1], 
 kasm parsing and generating can be done separately
 */
 
-enum {
-   NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP
-}
+
 
 
 enum {
@@ -24,7 +22,7 @@ enum {
    INCr, INCm,
    DECr, DECm
 };
-i
+
 
 struct Machine {
    uint64_t* mem; //mem[65536]
