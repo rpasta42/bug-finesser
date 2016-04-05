@@ -7,6 +7,7 @@
 //#include <regex>
 #include <sstream>
 #include <cstring>
+#include <stdint.h>
 #include <unistd.h>
 #include <assert.h>
 
@@ -18,7 +19,7 @@ using namespace std;
 typedef vector<string> vecStr;
 
 vecStr split(const string &s, char delim);
-void print_bin(uint64_t n);
+inline void print_bin(uint64_t n) { cout << n; }
 
 typedef uint8_t Instr;
 typedef uint8_t Reg;
