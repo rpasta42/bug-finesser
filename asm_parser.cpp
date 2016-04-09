@@ -1,5 +1,85 @@
 #include "asm_parser.h"
 
+/*
+typedef uint8_t Instr;
+typedef uint8_t Reg;
+typedef uint16_t Mem;
+typedef uint32_t Const;
+*/
+
+void error(string s) {
+   cout << s;
+}
+
+enum class OperandType {
+   Register, Memory, Constant
+};
+
+struct Operand {
+   OperandType t;
+
+   union {
+      uint8_t regVal;
+      uint16_t addrVal;
+      uint32_t constVal;
+   };
+
+   template <class T>
+   Operand(OperandType _t, T value)
+      : t(_t)
+   {
+      if (t == OperandType::Register) {
+         regVal = value;
+      } else if (t == OperandType::Memory) {
+         addrVal = value;
+      } else if (t == OperandType::Constant) {
+         constVal = value;
+      }
+   }
+};
+
+enum Instruction : uint8_t {
+   NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP
+};
+
+#define C_r
+#define C_
+
+class Opcode {
+   Op o;
+
+public:
+   Opcode() {
+      o.i = 0;
+   }
+
+   Opcode(uint64_t uint64) {
+      o.uint64 = uint64;
+   }
+
+   Opcode(Instruction instr)
+      : Opcode()
+   {
+      o.i = instr;
+   }
+
+   Opcode(Instruction instr, Operand a)
+      : Opcode(instr)
+   {
+      if (a.t == OperandType.Register) {}
+      else if (a.t == OperandType.Memory) {}
+      else if (a.t == OperandType.Constant) {}
+   }
+
+   Opcode(Instruction instr, Operand a, Operand b)
+      : Opcode(instr)
+   {}
+
+
+};
+
+//uint64_t opcode(Instr i, )
+
 vector<uint64_t> kasm(string s) {
    vector<uint64_t> ret;
    s += '\n';
