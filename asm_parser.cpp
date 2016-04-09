@@ -7,6 +7,10 @@ typedef uint16_t Mem;
 typedef uint32_t Const;
 */
 
+void error(string s) {
+   cout << s;
+}
+
 enum class OperandType {
    Register, Memory, Constant
 };
