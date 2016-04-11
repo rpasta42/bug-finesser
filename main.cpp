@@ -1,8 +1,8 @@
 #include "main.h"
-#include <string.h>
 
 #define err(s) do { cout << "error" << s; exit(-1); } while (0)
 #define debugp(s) cout << s;
+
 
 struct Machine {
    u64 mem[65536];
@@ -45,11 +45,9 @@ struct Machine {
          f(&r[instr.mr.a], &mem[instr.mr.r], 8);
          break;
       case OpLayout::RC:
-         cout << instr.rc.c;
          f(&r[instr.rc.r], &instr.rc.c, 4);
          break;
       case OpLayout::MC:
-         cout << instr.mc.c;
          f(&mem[instr.mc.a], &instr.mc.c, 4);
          break;
       default:
@@ -61,6 +59,7 @@ struct Machine {
    void run() {
       while (true) {
          instr_ptr++;
+         //cout << instr_ptr << endl;
          if (!mem[instr_ptr]) err("Bad instruction");
 
          instr.uint64 = mem[instr_ptr];
@@ -83,53 +82,93 @@ struct Machine {
             });
             break;
          }
-         /*case OpType::
-         }*/
-            /*switch (layout) {
-            case OpLayout::RR: r[instr.rr.r1] = r[instr.rr.r2]; break;
-            case OpLayout::RM: r[instr.rm.r] = r[instr.rc.c]; break;
-            case OpLayout::MR: break;
-            }*/
+         case OpType::PUSH: {
+            apply(op, [&](void* val, void* x, u8 size) {
+
+            });
+            break;
+         }
+         case OpType::INT: {
+            assert(layout == OpLayout::C);
+            u8 cmd = instr.c;
+            switch (cmd) {
+            case 0:
+               usleep(r[0]);
+               break;
+            case 1:
+               cout << (char)r[0];
+               break;
+            case 2:
+               r[0] = getch(false);
+               break;
+            default:
+               err("interrupt not implemented");
+               cout << cmd;
+               break;
+            }
+            break;
+         }
          default:
+            op.print();
             err("Command not implemented");
+            break;
          }
       }
    }
 
 };
 
+
+vector<u64> assemble(string s) {
+   vector<u64> ret;
+
+   auto lines = split(s, '\n');
+   for (auto line : lines) {
+      Instr i;
+
+      auto words = split(line, ' ');
+      //for (auto word : words) {}
+   }
+}
+
 int main() {
    Machine m;
 
    Instr instr1;
    instr1.o = Op(OpType::MOV, OpLayout::MC).op;
-   instr1.mc.a = 5;
+   instr1.mc.a = 10;
    instr1.mc.c = 16;
    m.mem[1] = instr1.uint64;
 
    Instr instr2;
    instr2.o = Op(OpType::MOV, OpLayout::RC).op;
-   instr2.rc.r = 0;
+   instr2.rc.r = 1;
    instr2.rc.c = 16;
    m.mem[2] = instr2.uint64;
 
+   Instr instr3;
+   instr3.o = Op(OpType::INT, OpLayout::C).op;
+   instr3.c = 2;
+   m.mem[3] = instr3.uint64;
+
    Instr instr10;
    instr10.o = Op(OpType::HALT, OpLayout::NONE).op;
-   m.mem[3] = instr10.uint64;
+   m.mem[4] = instr10.uint64;
 
    m.run();
 
-   cout << m.r[0] << "\n";
-   cout << m.mem[5] << "\n";
+   //cout << m.r[0] << "\n";
+   //cout << m.mem[5] << "\n";
 
-   /*cout << "registers: ";
+   //char c = getch();
+   cout << "registers: ";
    for (int i = 0; i < 20; i++)
       cout << m.r[i] << " ";
 
    cout << endl << "mem: ";
    for (int i = 0; i < 20; i++)
       cout << m.mem[i] << " ";
-   cout << endl;*/
+   cout << endl;
    //testOp();
 }
 

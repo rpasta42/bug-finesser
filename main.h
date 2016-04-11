@@ -4,6 +4,12 @@
 #include <stdint.h>
 #include <iostream>
 #include <functional>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <vector>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -12,15 +18,19 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
+char getch(bool echo);
+typedef vector<string> vecStr;
+vecStr split(const string &s, char delim);
+
 //address = u16
 //register size u64, register specifier u8
 
 //INT specifies operation based on constant passed to it
 //INT 0 = sleep r1*microseconds
-//INT 1 halt (!!?? bad, already an instruction)
-//INT 2 print r1 char
-//INT 3 store character into r1
-//INT 4 switch page r1 (TODO?)
+//INT 1 print r1 char
+//INT 2 store character into r1
+//INT 3 switch page r1 (TODO?)
+//INT 4 halt (!!?? bad, already an instruction)
 
 enum class OpType : u8 {
    NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP, HALT, GOTO, INT
