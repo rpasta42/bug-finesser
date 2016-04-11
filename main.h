@@ -135,35 +135,35 @@ struct Instr {
    union {
       u64 uint64;
       struct {
-         u8 o; //Opcode
+         u8 o : 8; //Opcode
          union {
-            u8 r;
-            u16 a;
-            u32 c;
+            u8 r : 8;
+            u16 a : 16;
+            u32 c : 32;
             struct {
-               u8 r1;
-               u8 r2;
+               u8 r1 : 8;
+               u8 r2 : 8;
             } rr;
             struct {
-               u8 r;
-               u16 a;
+               u8 r : 8;
+               u16 a : 8;
             } rm;
             struct {
-               u16 a;
-               u8 r;
+               u16 a : 16;
+               u8 r : 8;
             } mr;
             struct {
-               u8 r;
-               u32 c;
+               u8 r : 8;
+               u32 c : 32;
             } rc;
             struct {
-               u16 a;
-               u32 c;
+               u16 a : 16;
+               u32 c : 32;
             } mc;
          };
       };
    };
-};
+} __attribute__((packed));
 
 #endif //MAIN_H_INCLUDE
 

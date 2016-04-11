@@ -1,4 +1,5 @@
 #include "main.h"
+#include <string.h>
 
 template <class A, class B>
 void opMov(A *a, B *b) {
@@ -25,34 +26,36 @@ struct Machine {
    }
 
    //template <OpLayout L>
-   void apply(Op op, std::function<void(u64*, u64*)> f) {
+   void apply(Op op, std::function<void(void*, void*, u8)> f) {
       switch (op.getLayout()) {
       case OpLayout::NONE:
-         f(NULL, NULL);
+         f(NULL, NULL, 0);
          break;
       case OpLayout::R:
-         f(&r[instr.r], NULL);
+         f(&r[instr.r], NULL, 8);
          break;
       case OpLayout::M:
-         f(&mem[instr.a], NULL);
+         f(&mem[instr.a], NULL, 8);
          break;
       case OpLayout::C:
-         f((u64*)&instr.c, NULL);
+         f((u64*)&instr.c, NULL, 4);
          break;
       case OpLayout::RR:
-         f(&r[instr.rr.r1], &r[instr.rr.r2]);
+         f(&r[instr.rr.r1], &r[instr.rr.r2], 8);
          break;
       case OpLayout::RM:
-         f(&r[instr.rm.r], &mem[instr.rm.a]);
+         f(&r[instr.rm.r], &mem[instr.rm.a], 8);
          break;
       case OpLayout::MR:
-         f(&r[instr.mr.a], &mem[instr.mr.r]);
+         f(&r[instr.mr.a], &mem[instr.mr.r], 8);
          break;
       case OpLayout::RC:
-         f(&r[instr.rc.r], (u64*)&instr.rc.c);
+         cout << instr.rc.c;
+         f(&r[instr.rc.r], &instr.rc.c, 4);
          break;
       case OpLayout::MC:
-         f(&mem[instr.mc.a], (u64*)&instr.mc.c);
+         cout << instr.mc.c;
+         f(&mem[instr.mc.a], &instr.mc.c, 4);
          break;
       default:
          err("Bad layout");
@@ -79,8 +82,9 @@ struct Machine {
             return;
             break;
          case OpType::MOV: {
-            apply(op, [&](auto a, auto b) {
-               *a = *b;
+            apply(op, [&](void* a, void* b, u8 size) {
+               memcpy(a, b, size);
+               //*a = *b;
             });
             break;
          }
@@ -118,7 +122,7 @@ int main() {
 
    m.run();
 
-   //cout << m.r[0] << "\n";
+   cout << m.r[0] << "\n";
    cout << m.mem[5] << "\n";
 
    /*cout << "registers: ";
