@@ -1,26 +1,4 @@
 #include "main.h"
-#include "asm_parser.h"
-
-/*
-instead of enum for each type, have and flags for const, reg or mem.
-in Machine execution, instead of doing manual comparison if (MOVrr) r[c.rr.r1], can have function get(type, value)
-kasm parsing and generating can be done separately
-*/
-
-
-enum {
-   //NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP
-   NOP, HALT,
-   MOVrr, MOVrm, MOVmr, MOVrc, MOVmc,
-   PUSHr, PUSHm, PUSHc,
-   POPr, POPm,
-   LEArm,
-   ADDrr, ADDrm, ADDmr, ADDrc, ADDmc,
-   SUBrr, SUBrm, SUBmr, SUBrc, SUBmc,
-   INCr, INCm,
-   DECr, DECm
-};
-
 
 struct Machine {
    uint64_t* mem; //mem[65536]
@@ -74,10 +52,7 @@ int main() {
    kasm("hello wlrd\ngdfgdf");
 }
 
-
-int main1() {
-
-
+void exec() {
    uint64_t mem[65536];
 
    for (uint16_t i = 0; i < 65535; i++)
@@ -92,6 +67,6 @@ int main1() {
 
    //inst(4);
 
-   return 0;
 }
+
 

@@ -1,15 +1,4 @@
-#include "asm_parser.h"
-
-/*
-typedef uint8_t Instr;
-typedef uint8_t Reg;
-typedef uint16_t Mem;
-typedef uint32_t Const;
-*/
-
-void error(string s) {
-   cout << s;
-}
+#include "main.h"
 
 enum class OperandType {
    Register, Memory, Constant
@@ -37,11 +26,6 @@ struct Operand {
       }
    }
 };
-
-enum Instruction : uint8_t {
-   NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP
-};
-
 #define C_r
 #define C_
 
@@ -184,3 +168,5 @@ vector<uint64_t> kasm(string s) {
    }
    return ret;
 }
+
+
