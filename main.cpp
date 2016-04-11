@@ -1,11 +1,6 @@
 #include "main.h"
 #include <string.h>
 
-template <class A, class B>
-void opMov(A *a, B *b) {
-   a = b;
-}
-
 #define err(s) do { cout << "error" << s; exit(-1); } while (0)
 #define debugp(s) cout << s;
 
@@ -17,7 +12,7 @@ struct Machine {
    Instr instr; //current instruction being executed
 
    Machine()
-      : instr_ptr(0), stack_ptr(30000)
+      : instr_ptr(0), stack_ptr(50000)
    {
       for (int i = 0; i < 255; i++)
          r[i] = 0;
@@ -88,6 +83,8 @@ struct Machine {
             });
             break;
          }
+         /*case OpType::
+         }*/
             /*switch (layout) {
             case OpLayout::RR: r[instr.rr.r1] = r[instr.rr.r2]; break;
             case OpLayout::RM: r[instr.rm.r] = r[instr.rc.c]; break;
@@ -196,6 +193,5 @@ int testOp() {
    Instr s;
    s.o = o;
 }*/
-
 
 
