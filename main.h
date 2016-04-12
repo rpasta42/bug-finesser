@@ -50,12 +50,12 @@ vector<u64> assemble(string s);
 //INT 3 switch page r1 (TODO?)
 //INT 4 halt (!!?? bad, already an instruction)
 
+//good: nop, halt, mov, push, pop, int
 enum class OpType : u8 {
    NOP, HALT, //No args
+   MOV, LEA, CMP, MUL, ADD, SUB, //2 args
    PUSH, POP, INC, DEC, INT, CALL, //1 arg
-   JMP, JE, JNE, JZ, JNZ, JL, JG, //1 addr arg (jmp, eq, not eq, 0, not 0, <, >)
-   MOV, LEA, CMP, MUL, ADD, SUB //2 args
-
+   JMP, JE, JNE, JZ, JNZ, JL, JG //1 addr arg (jmp, eq, not eq, 0, not 0, <, >)
    /*NOP, HALT,
    MOVrr, MOVrm, MOVmr, MOVrc, MOVmc,
    PUSHr, PUSHm, PUSHc,

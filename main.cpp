@@ -115,6 +115,12 @@ struct Machine {
             }
             break;
          }
+         case OpType::JMP: {
+            apply(op, [&](void* val, void* unused, u8 size) {
+               instr_ptr = *(u64*)val;
+            });
+            break;
+         }
          default:
             op.print();
             err("Command not implemented");

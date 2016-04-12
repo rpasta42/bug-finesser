@@ -10,6 +10,13 @@ vector<u64> assemble(string s) {
    u32 addr = 1; //temporarily load every application at 1. TODO: linker/loader
 
    for (auto line : lines) {
+      vecStr words = split(line, ' ');
+      if (words.size() == 2 && words[0] == "label")
+         label_addrs[words[1].erase(0, 1)] = addr;
+      addr++;
+   }
+
+   for (auto line : lines) {
       Instr instr;
       OpLayout layout;
       OpType type;
@@ -34,23 +41,24 @@ vector<u64> assemble(string s) {
       else if (numOp == 1) {//push, pop, inc, dec
          char layout_s = words[1][0];
          string operand_s = words[1].erase(0, 1);
-         u32 operand = (layout_s == '#') ? 0 : stoi(operand_s);
+         u32 operand = (layout_s == '\'') ? 0 : stoi(operand_s);
          if (layout_s == '%')
             layout = OpLayout::R;
          else if (layout_s == '@')
             layout = OpLayout::M;
-         else if (layout_s == '#') {
+         else if (layout_s == '#')
             layout = OpLayout::C;
-         }
          else {
             assert(layout_s == '\'');
             if (op == "label") {
                if (label_addrs.find(operand_s) != label_addrs.end())
-                  err("AsmErr: cannot re-use labels");
-               label_addrs[operand_s] = addr+1;
+                  err("AsmErr: cannot re-use labels: " + operand_s);
+               label_addrs[operand_s] = addr;
                continue;
             }
-            layout = OpLayout::C;
+            if (label_addrs.find(operand_s) == label_addrs.end())
+               err("Unknown label " + operand_s);
+            layout = OpLayout::M;
             operand = label_addrs[operand_s];
          }
 
