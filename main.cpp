@@ -139,8 +139,28 @@ vector<u64> assemble2(string s) {
 }
 
 int main() {
-   string s = "mov $yo %blah";
-   auto code = assemble(s);
+
+   Machine m;
+   string code = "mov %0 #15\nmov %1 #20\nmov @10 #42\nhalt";
+   vector<u64> parsed_asm = assemble(code);
+   int i = 1;
+   for (auto cmd : parsed_asm)
+      m.mem[i++] = cmd;
+
+   m.run();
+
+   cout << "registers: ";
+   for (int i = 0; i < 20; i++)
+      cout << m.r[i] << " ";
+
+   cout << endl << "mem: ";
+   for (int i = 0; i < 20; i++)
+      cout << m.mem[i] << " ";
+   cout << endl;
+
+   /*Instr i;
+   i.uint64 = parsed_asm[0];
+   Op(i.o).print();*/
 }
 
 int test_machine() {
@@ -173,14 +193,6 @@ int test_machine() {
    //cout << m.mem[5] << "\n";
 
    //char c = getch();
-   cout << "registers: ";
-   for (int i = 0; i < 20; i++)
-      cout << m.r[i] << " ";
-
-   cout << endl << "mem: ";
-   for (int i = 0; i < 20; i++)
-      cout << m.mem[i] << " ";
-   cout << endl;
    //testOp();
 }
 

@@ -24,7 +24,7 @@ vecStr split(const string &s, char delim);
 
 vector<u64> assemble(string s);
 
-#define err(s) do { cout << "error" << (s); exit(-1); } while (0)
+#define err(s) do { cout << "error: " << (s) << endl; exit(-1); } while (0)
 #define debugp(s) cout << s;
 
 
@@ -39,7 +39,7 @@ vector<u64> assemble(string s);
 //INT 4 halt (!!?? bad, already an instruction)
 
 enum class OpType : u8 {
-   NOP, MOV, PUSH, POP, LEA, ADD, SUB, INC, DEC, CMP, HALT, GOTO, INT
+   NOP, MOV, PUSH, POP, LEA, ADD, MUL, SUB, INC, DEC, CMP, HALT, GOTO, INT, JE, JNE
    /*NOP, HALT,
    MOVrr, MOVrm, MOVmr, MOVrc, MOVmc,
    PUSHr, PUSHm, PUSHc,
