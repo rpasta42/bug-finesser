@@ -1,8 +1,5 @@
 #include "main.h"
 
-#define err(s) do { cout << "error" << s; exit(-1); } while (0)
-#define debugp(s) cout << s;
-
 
 struct Machine {
    u64 mem[65536];
@@ -12,7 +9,7 @@ struct Machine {
    Instr instr; //current instruction being executed
 
    Machine()
-      : instr_ptr(0), stack_ptr(50000)
+      : instr_ptr(0), stack_ptr(40000)
    {
       for (int i = 0; i < 255; i++)
          r[i] = 0;
@@ -119,19 +116,34 @@ struct Machine {
 };
 
 
-vector<u64> assemble(string s) {
+vector<u64> assemble2(string s) {
    vector<u64> ret;
 
    auto lines = split(s, '\n');
    for (auto line : lines) {
-      Instr i;
+      Instr instr;
 
       auto words = split(line, ' ');
       //for (auto word : words) {}
+      if (words.size() == 0)
+         continue;
+
+      if (words.size() == 1) {
+         if (words[0] == "nop") {
+            instr.o = Op(OpType::NOP, OpLayout::NONE).op;
+            ret.push_back(instr.uint64);
+         }
+      }
    }
+   return ret;
 }
 
 int main() {
+   string s = "mov $yo %blah";
+   auto code = assemble(s);
+}
+
+int test_machine() {
    Machine m;
 
    Instr instr1;

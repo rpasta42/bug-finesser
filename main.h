@@ -22,6 +22,12 @@ char getch(bool echo);
 typedef vector<string> vecStr;
 vecStr split(const string &s, char delim);
 
+vector<u64> assemble(string s);
+
+#define err(s) do { cout << "error" << (s); exit(-1); } while (0)
+#define debugp(s) cout << s;
+
+
 //address = u16
 //register size u64, register specifier u8
 

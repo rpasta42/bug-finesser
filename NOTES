@@ -1,3 +1,6 @@
+%reg
+@addr
+#const
 
 instead of enum for each type, have and flags for const, reg or mem.
 in Machine execution, instead of doing manual comparison if (MOVrr) r[c.rr.r1], can have function get(type, value)
@@ -20,7 +23,7 @@ uint8_t     0-255
 
 memory   0-65,535
    io    50,000-65,535
-   stack 30,000-49,999
+   stack 40,000-49,999
 
 nop
 mov   reg/mem,       reg/mem/const
@@ -110,7 +113,6 @@ inline cmd inst(Instr i, Reg r1, Reg r2) {
    ret.rr = {i, r1, r2};
    return ret;
 }
-<<<<<<< HEAD
 inline cmd inst(Instr i, Reg r, Mem m) {
    cmd ret;
    ret.rm = {i, r, m};
