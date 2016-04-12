@@ -2,6 +2,7 @@
 #define MAIN_H_INCLUDE
 
 #include <stdint.h>
+#include <algorithm>
 #include <iostream>
 #include <functional>
 #include <string.h>
@@ -17,16 +18,27 @@ typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
+typedef vector<string> VecStr;
 
 char getch(bool echo);
 typedef vector<string> vecStr;
 vecStr split(const string &s, char delim);
+template <class T>
+bool contains(vector<T> v, T item) {
+   if (find(v.begin(), v.end(), item) != v.end())
+      return true;
+   return false;
+}
+string read_file(string path);
 
 vector<u64> assemble(string s);
 
 #define err(s) do { cout << "error: " << (s) << endl; exit(-1); } while (0)
 #define debugp(s) cout << s;
 
+#define STACK_START 40000
+#define MACHINE_MEM 65536
+#define NUM_REGISTERS 256
 
 //address = u16
 //register size u64, register specifier u8
@@ -39,7 +51,11 @@ vector<u64> assemble(string s);
 //INT 4 halt (!!?? bad, already an instruction)
 
 enum class OpType : u8 {
-   NOP, MOV, PUSH, POP, LEA, ADD, MUL, SUB, INC, DEC, CMP, HALT, GOTO, INT, JE, JNE
+   NOP, HALT, //No args
+   PUSH, POP, INC, DEC, INT, CALL, //1 arg
+   JMP, JE, JNE, JZ, JNZ, JL, JG, //1 addr arg (jmp, eq, not eq, 0, not 0, <, >)
+   MOV, LEA, CMP, MUL, ADD, SUB //2 args
+
    /*NOP, HALT,
    MOVrr, MOVrm, MOVmr, MOVrc, MOVmc,
    PUSHr, PUSHm, PUSHc,
@@ -48,8 +64,13 @@ enum class OpType : u8 {
    ADDrr, ADDrm, ADDmr, ADDrc, ADDmc,
    SUBrr, SUBrm, SUBmr, SUBrc, SUBmc,
    INCr, INCm,
-   DECr, DECm*/
+   DECr, DECm
+   ==TODO
+   CMP, GOTO, JE, JNE
+*/
 };
+
+OpType get_asm_op(string s);
 
 enum class OpLayout : u8 {
    NONE,

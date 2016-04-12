@@ -1,6 +1,13 @@
+TODO:
+   possibly make variable-length instructions and have bigger address space
+
 %reg
 @addr
 #const
+'label
+
+'labels can only be used with 1-argument calls
+
 
 instead of enum for each type, have and flags for const, reg or mem.
 in Machine execution, instead of doing manual comparison if (MOVrr) r[c.rr.r1], can have function get(type, value)

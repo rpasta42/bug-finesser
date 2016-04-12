@@ -3,3 +3,6 @@
 bin/
 obj/
 a.out
+a.out.js
+target.js
+target.html

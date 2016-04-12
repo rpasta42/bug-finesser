@@ -1,11 +1,14 @@
 #include "main.h"
+#include <map>
 
 vector<u64> assemble(string s) {
    vector<u64> ret;
-
    s += '\n';
 
    vector<string> lines = split(s, '\n');
+   map<string, int> label_addrs;
+   u32 addr = 1; //temporarily load every application at 1. TODO: linker/loader
+
    for (auto line : lines) {
       Instr instr;
       OpLayout layout;
@@ -30,14 +33,25 @@ vector<u64> assemble(string s) {
       }
       else if (numOp == 1) {//push, pop, inc, dec
          char layout_s = words[1][0];
-         u32 operand = stoi(words[1].erase(0, 1));
+         string operand_s = words[1].erase(0, 1);
+         u32 operand = (layout_s == '#') ? 0 : stoi(operand_s);
          if (layout_s == '%')
             layout = OpLayout::R;
          else if (layout_s == '@')
             layout = OpLayout::M;
-         else {
-            assert(layout_s == '#');
+         else if (layout_s == '#') {
             layout = OpLayout::C;
+         }
+         else {
+            assert(layout_s == '\'');
+            if (op == "label") {
+               if (label_addrs.find(operand_s) != label_addrs.end())
+                  err("AsmErr: cannot re-use labels");
+               label_addrs[operand_s] = addr+1;
+               continue;
+            }
+            layout = OpLayout::C;
+            operand = label_addrs[operand_s];
          }
 
          switch (layout) {
@@ -55,17 +69,15 @@ vector<u64> assemble(string s) {
             break;
          }
 
-         if (op == "push")
-            instr.o = Op(OpType::PUSH, layout).op;
-         else {
-            assert(layout == OpLayout::R || layout == OpLayout::M);
-            if (op == "pop")
-               instr.o = Op(OpType::POP, layout).op;
-            else if (op == "inc")
-               instr.o = Op(OpType::INC, layout).op;
-            else if (op == "dec")
-               instr.o = Op(OpType::DEC, layout).op;
-            else err("unsupported instruction");
+         VecStr jmp_cmds = {"call", "jmp", "je", "jne", "jz", "jnz", "jl", "jg"};
+         instr.o = Op(get_asm_op(op), layout).op;
+         if (op != "push") {
+            if (op == "int")
+               assert(layout == OpLayout::C);
+            else if (contains(jmp_cmds, string(op)))
+               assert(layout == OpLayout::M);
+            else
+               assert(layout == OpLayout::R || layout == OpLayout::M);
          }
       }
       else if (numOp == 2) {
@@ -118,24 +130,14 @@ vector<u64> assemble(string s) {
             break;
          }
 
-         if (op == "mov")
-            instr.o = Op(OpType::MOV, layout).op;
-         else if (op == "add")
-            instr.o = Op(OpType::ADD, layout).op;
-         else if (op == "sub")
-            instr.o = Op(OpType::SUB, layout).op;
-         else if (op == "mul")
-            instr.o = Op(OpType::MUL, layout).op;
-         else if (op == "lea") {
+         instr.o = Op(get_asm_op(op), layout).op;
+         //TODO: check layout
+         if (op == "lea")
             assert(layout == OpLayout::RM);
-            instr.o = Op(OpType::LEA, layout).op;
-         }
-         else
-            err("Bad operand " + op);
       }
       else
-         err(op + " cannot take " + to_string(numOp) + " arguments");
-
+         err(op + " got wrong number of arguments: " + to_string(numOp));
+      addr++;
       ret.push_back(instr.uint64);
    }
    return ret;

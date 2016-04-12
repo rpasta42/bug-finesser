@@ -1,16 +1,16 @@
 #include "main.h"
 
-
 struct Machine {
-   u64 mem[65536];
-   u64 r[256];
+   u64 mem[MACHINE_MEM];
+   u64 r[NUM_REGISTERS];
    u64 instr_ptr;
    u64 stack_ptr;
    Instr instr; //current instruction being executed
 
    Machine()
-      : instr_ptr(0), stack_ptr(40000)
+      : instr_ptr(0), stack_ptr(STACK_START)
    {
+      //TODO: can use memset or something to set everything to 0
       for (int i = 0; i < 255; i++)
          r[i] = 0;
       for (uint16_t i = 0; i < 65535; i++)
@@ -24,7 +24,7 @@ struct Machine {
          f(NULL, NULL, 0);
          break;
       case OpLayout::R:
-         f(&r[instr.r], NULL, 8);
+         f(&r[instr.r], NULL, 8); //register thingy is 8 but index is 1?
          break;
       case OpLayout::M:
          f(&mem[instr.a], NULL, 8);
@@ -55,6 +55,7 @@ struct Machine {
 
    void run() {
       while (true) {
+         usleep(50000); //0.05 seconds
          instr_ptr++;
          //cout << instr_ptr << endl;
          if (!mem[instr_ptr]) err("Bad instruction");
@@ -80,7 +81,16 @@ struct Machine {
             break;
          }
          case OpType::PUSH: {
-            apply(op, [&](void* val, void* x, u8 size) {
+            apply(op, [&](void* val, void* unused, u8 size) {
+               memcpy(&mem[stack_ptr++], val, size);
+            });
+            break;
+         }
+         case OpType::POP: {
+            apply(op, [&](void* val, void* unused, u8 size) {
+               assert(layout == OpLayout::R);
+               //memcpy(&r[*(u16*)val], &mem[stack_ptr--], size);
+               memcpy(val, &mem[(stack_ptr--)-1], size);
 
             });
             break;
@@ -115,8 +125,7 @@ struct Machine {
 
 };
 
-
-vector<u64> assemble2(string s) {
+/*vector<u64> assemble2(string s) {
    vector<u64> ret;
 
    auto lines = split(s, '\n');
@@ -136,19 +145,19 @@ vector<u64> assemble2(string s) {
       }
    }
    return ret;
-}
+}*/
 
-int main() {
+int test_machine();
 
+
+Machine load(vector<u64> machine_code) {
    Machine m;
-   string code = "mov %0 #15\nmov %1 #20\nmov @10 #42\nhalt";
-   vector<u64> parsed_asm = assemble(code);
    int i = 1;
-   for (auto cmd : parsed_asm)
+   for (auto cmd : machine_code)
       m.mem[i++] = cmd;
-
-   m.run();
-
+   return m;
+}
+void debug_machine_print(Machine &m) {
    cout << "registers: ";
    for (int i = 0; i < 20; i++)
       cout << m.r[i] << " ";
@@ -156,11 +165,37 @@ int main() {
    cout << endl << "mem: ";
    for (int i = 0; i < 20; i++)
       cout << m.mem[i] << " ";
-   cout << endl;
 
+   cout << endl << "stack: ";
+   for (int i = STACK_START; i < STACK_START + 20; i++)
+      cout << m.mem[i] << " ";
+   cout << endl;
+}
+
+int main(int nargs, char** args) {
+   string asm_code = read_file(string(args[1]));
+   vector<u64> machine_code = assemble(asm_code);
+   Machine m = load(machine_code);
+   cout << "initial state:\n";
+   debug_machine_print(m);
+   cout << endl << "after execution:\n";
+   m.run();
+   debug_machine_print(m);
+}
+
+int main1() {
+
+   string code = "mov %0 #15\nmov %1 #20\nmov @10 #42\nhalt";
+   vector<u64> parsed_asm = assemble(code);
+
+   Machine m = load(parsed_asm);
+   m.run();
+
+   debug_machine_print(m);
    /*Instr i;
    i.uint64 = parsed_asm[0];
    Op(i.o).print();*/
+   test_machine();
 }
 
 int test_machine() {

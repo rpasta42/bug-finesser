@@ -1,6 +1,55 @@
 #include "main.h"
 
 #include <termios.h>
+#include <algorithm>
+#include <fstream>
+#include <streambuf>
+
+OpType get_asm_op(string s) {
+   if (s == "nop")
+      return OpType::NOP;
+   if (s == "halt")
+      return OpType::HALT;
+   if (s == "push")
+      return OpType::PUSH;
+   if (s == "pop")
+      return OpType::POP;
+   if (s == "inc")
+      return OpType::INC;
+   if (s == "dec")
+      return OpType::DEC;
+   if (s == "int")
+      return OpType::INT;
+   if (s == "call")
+      return OpType::CALL;
+   if (s == "jmp")
+      return OpType::JMP;
+   if (s == "je")
+      return OpType::JE;
+   if (s == "jne")
+      return OpType::JNE;
+   if (s == "jz")
+      return OpType::JZ;
+   if (s == "jnz")
+      return OpType::JNZ;
+   if (s == "jl")
+      return OpType::JL;
+   if (s == "jg")
+      return OpType::JG;
+   if (s == "mov")
+      return OpType::MOV;
+   if (s == "lea")
+      return OpType::LEA;
+   if (s == "cmp")
+      return OpType::CMP;
+   if (s == "mul")
+      return OpType::MUL;
+   if (s == "add")
+      return OpType::ADD;
+   if (s == "sub")
+      return OpType::SUB;
+   err("bad asm instruction");
+}
 
 char getch(bool echo) {
    char buf = 0;
@@ -44,3 +93,17 @@ vecStr split(const string &s, char delim) {
     split(s, delim, elems);
     return elems;
 }
+
+string read_file(string path) {
+   ifstream f(path);
+   string str;
+
+   f.seekg(0, std::ios::end);
+   str.reserve(f.tellg());
+   f.seekg(0, std::ios::beg);
+
+   str.assign((std::istreambuf_iterator<char>(f)),
+               std::istreambuf_iterator<char>());
+   return str;
+}
+
