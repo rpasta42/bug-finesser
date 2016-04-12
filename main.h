@@ -19,20 +19,6 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 typedef vector<string> VecStr;
-
-char getch(bool echo);
-typedef vector<string> vecStr;
-vecStr split(const string &s, char delim);
-template <class T>
-bool contains(vector<T> v, T item) {
-   if (find(v.begin(), v.end(), item) != v.end())
-      return true;
-   return false;
-}
-string read_file(string path);
-
-vector<u64> assemble(string s);
-
 #define err(s) do { cout << "error: " << (s) << endl; exit(-1); } while (0)
 #define debugp(s) cout << s;
 
@@ -50,7 +36,8 @@ vector<u64> assemble(string s);
 //INT 3 switch page r1 (TODO?)
 //INT 4 halt (!!?? bad, already an instruction)
 
-//good: nop, halt, mov, push, pop, int
+//good: label, nop, halt, mov, push, pop, int, jmp,
+
 enum class OpType : u8 {
    NOP, HALT, //No args
    MOV, LEA, CMP, MUL, ADD, SUB, //2 args
@@ -203,6 +190,52 @@ struct Instr {
       } pack_;
    };
 } pack_;
+
+char getch(bool echo);
+typedef vector<string> vecStr;
+vecStr split(const string &s, char delim);
+template <class T>
+bool contains(vector<T> v, T item) {
+   if (find(v.begin(), v.end(), item) != v.end())
+      return true;
+   return false;
+}
+string read_file(string path);
+
+template <class T> u8 asm_cmp_helper(T a, T b) {
+      if (a == b) return 0;
+      if (a < b) return 1;
+      if (a > b) return 2;
+}
+inline u8 asm_cmp(void* a_, void* b_, u8 size) {
+   if (size == 1) {
+      u8 a = *(u8*)a_;
+      u8 b = *(u8*)b_;
+      return asm_cmp_helper(a, b);
+   }
+   if (size == 2) {
+      u16 a = *(u16*)a_;
+      u16 b = *(u16*)b_;
+      return asm_cmp_helper(a, b);
+   }
+   if (size == 4) {
+      u16 a = *(u16*)a_;
+      u16 b = *(u16*)b_;
+      return asm_cmp_helper(a, b);
+   }
+   if (size == 8) {
+      u16 a = *(u16*)a_;
+      u16 b = *(u16*)b_;
+      return asm_cmp_helper(a, b);
+   }
+
+   cout << (int)size; //kk TODO
+   err("bad cmp size");
+}
+
+
+vector<u64> assemble(string s);
+
 
 #endif //MAIN_H_INCLUDE
 

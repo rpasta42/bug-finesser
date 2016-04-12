@@ -6,17 +6,30 @@ vector<u64> assemble(string s) {
    s += '\n';
 
    vector<string> lines = split(s, '\n');
-   map<string, int> label_addrs;
+   map<string, u32> label_addrs;
    u32 addr = 1; //temporarily load every application at 1. TODO: linker/loader
 
    for (auto line : lines) {
       vecStr words = split(line, ' ');
-      if (words.size() == 2 && words[0] == "label")
-         label_addrs[words[1].erase(0, 1)] = addr;
-      addr++;
+      if (words.size() == 0 || words[0] == ";") ;
+      else if (words.size() == 2 && words[0] == "label") {
+         string label = words[1].erase(0, 1);
+         if (label_addrs.find(label) != label_addrs.end())
+            err("AsmErr: cannot re-use labels: " + label);
+         cout << "new label " << label << " addr: " << addr << endl;
+         label_addrs[label] = addr-1;
+         continue;
+      }
+      else
+         addr++;
    }
+   addr = 1;
+   int lineNum = 0;
 
    for (auto line : lines) {
+      //for debugging lexer
+      //cout << "line " << lineNum++ << endl;
+
       Instr instr;
       OpLayout layout;
       OpType type;
@@ -50,15 +63,12 @@ vector<u64> assemble(string s) {
             layout = OpLayout::C;
          else {
             assert(layout_s == '\'');
-            if (op == "label") {
-               if (label_addrs.find(operand_s) != label_addrs.end())
-                  err("AsmErr: cannot re-use labels: " + operand_s);
-               label_addrs[operand_s] = addr;
+            if (op == "label")
                continue;
-            }
             if (label_addrs.find(operand_s) == label_addrs.end())
                err("Unknown label " + operand_s);
-            layout = OpLayout::M;
+            //TODO: layout = OpLayout::M;
+            layout = OpLayout::C;
             operand = label_addrs[operand_s];
          }
 
@@ -83,7 +93,7 @@ vector<u64> assemble(string s) {
             if (op == "int")
                assert(layout == OpLayout::C);
             else if (contains(jmp_cmds, string(op)))
-               assert(layout == OpLayout::M);
+               assert(layout == OpLayout::C || layout == OpLayout::R); //or OpLayout::M
             else
                assert(layout == OpLayout::R || layout == OpLayout::M);
          }

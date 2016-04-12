@@ -1,14 +1,18 @@
 #include "main.h"
 
+struct Machine;
+void debug_machine_print(Machine &m);
+
 struct Machine {
    u64 mem[MACHINE_MEM];
    u64 r[NUM_REGISTERS];
    u64 instr_ptr;
    u64 stack_ptr;
    Instr instr; //current instruction being executed
+   u8 cmp_result; //0 = eq, 1 = less than, 3 = more than, 4 = err
 
    Machine()
-      : instr_ptr(0), stack_ptr(STACK_START)
+      : instr_ptr(0), stack_ptr(STACK_START), cmp_result(4)
    {
       //TODO: can use memset or something to set everything to 0
       for (int i = 0; i < 255; i++)
@@ -24,10 +28,12 @@ struct Machine {
          f(NULL, NULL, 0);
          break;
       case OpLayout::R:
-         f(&r[instr.r], NULL, 8); //register thingy is 8 but index is 1?
+         f(&r[instr.r], NULL, 8); //TODO: register thingy is 8 but index is 1?
          break;
       case OpLayout::M:
-         f(&mem[instr.a], NULL, 8);
+         f(&mem[instr.a], NULL, 8); //TODO: or 8?
+         //KK TODO: f(&mem[instr.a], NULL, 4); //TODO: or 8?
+         //f(&instr.a, NULL, 4);
          break;
       case OpLayout::C:
          f((u64*)&instr.c, NULL, 4);
@@ -55,7 +61,12 @@ struct Machine {
 
    void run() {
       while (true) {
-         usleep(50000); //0.05 seconds
+         usleep(2);
+         //usleep(50000); //0.05 seconds
+         /*debug_machine_print(*this);
+         getch(true);
+         cout << endl;*/
+
          instr_ptr++;
          //cout << instr_ptr << endl;
          if (!mem[instr_ptr]) err("Bad instruction");
@@ -117,7 +128,41 @@ struct Machine {
          }
          case OpType::JMP: {
             apply(op, [&](void* val, void* unused, u8 size) {
-               instr_ptr = *(u64*)val;
+               //KK TODO assert(layout == OpLayout::M);
+               assert(layout == OpLayout::C || layout == OpLayout::R);
+               instr_ptr = *((u16*)val);
+            });
+            break;
+         }
+         case OpType::CMP: {
+            apply(op, [&](void* a, void* b, u8 size) {
+               cmp_result = asm_cmp(a, b, size);
+            });
+            break;
+         }
+         case OpType::JE: {
+            apply(op, [&](void* val, void* unused, u8 size) {
+               assert(layout == OpLayout::C);
+               if (cmp_result == 4)
+                  err("jump without previous cmp");
+               if (cmp_result == 0)
+                  instr_ptr = *((u16*)val);
+            });
+            break;
+         }
+         case OpType::SUB: {
+            assert(layout == OpLayout::RC); //temporary only for fib
+            apply(op, [&](void* a, void* b, u8 size) {
+               assert(size == 4);
+               *(u64*)a =(u64) *(u32*)a - *(u32*)b;
+            });
+            break;
+         }
+         case OpType::ADD: {
+            assert(layout == OpLayout::RR); //temporary only for fib
+            apply(op, [&](void* a, void* b, u8 size) {
+               assert(size == 8);
+               *(u64*)a =(u64) *(u64*)a + *(u64*)b;
             });
             break;
          }
