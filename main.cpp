@@ -61,7 +61,7 @@ struct Machine {
 
    void run() {
       while (true) {
-         usleep(2);
+         //usleep(2);
          //usleep(50000); //0.05 seconds
          /*debug_machine_print(*this);
          getch(true);

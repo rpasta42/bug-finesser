@@ -2,7 +2,7 @@
 ; push argument (10) and return address on stack
 push 'exithalt
 ; next test with 10
-push #10
+push #20
 jmp 'fib
 
 label 'exithalt

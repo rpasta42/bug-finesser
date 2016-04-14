@@ -4,5 +4,6 @@ bin/
 obj/
 a.out
 a.out.js
+a.out.js.map
 target.js
 target.html
