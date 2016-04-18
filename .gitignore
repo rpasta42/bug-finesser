@@ -1,5 +1,7 @@
 .*.swp
 *.o
+*.bc
+*.s
 bin/
 obj/
 a.out

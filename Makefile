@@ -11,4 +11,4 @@ bin: main.cpp
 	$(CXX) -std=c++14 utils.cpp main.cpp asm_parser.cpp $(EXTRA)
 
 clean:
-	rm -f *.o a.out a.out.js target.html target.js
+	rm -f llvm/*.bc llvm/*.s llvm/a.out llvm/*.o *.o a.out a.out.js a.out.js.map target.html target.js

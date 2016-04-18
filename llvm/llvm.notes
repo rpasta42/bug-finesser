@@ -1,0 +1,12 @@
+llc fib.ll
+   generates x86 asm
+llc -filetype=obj fib.ll
+   generates .o
+gcc fib.o
+   compile .o
+
+emcc fib.ll
+   generates fib.bc
+llc -filetype=obj fib.bc
+   generates .o
+
