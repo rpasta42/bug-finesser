@@ -1,6 +1,7 @@
 TODO:
    possibly make variable-length instructions and have bigger address space
-
+   switch to 16-byte instructions for performance reasons
+      -makes code twice as long, but should increase performance because bit-shifting is expensive
 %reg
 @addr
 #const
