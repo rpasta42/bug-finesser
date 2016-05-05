@@ -337,3 +337,7 @@ inline cmd inst(Instr i, Mem m, Const c) {
 }*/
 
 
+http://ref.x86asm.net/coder64.html
+http://stackoverflow.com/questions/6019843/how-to-interpret-the-opcode-manually
+http://stackoverflow.com/questions/6401586/intel-x86-opcode-reference
+
