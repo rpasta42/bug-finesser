@@ -18,7 +18,10 @@ typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
+typedef unsigned int uint;
 typedef vector<string> VecStr;
+typedef vector<string> vecStr;
+
 #define err(s) do { cout << "error: " << (s) << endl; exit(-1); } while (0)
 #define debugp(s) cout << s;
 
@@ -192,7 +195,7 @@ struct Instr {
 } pack_;
 
 char getch(bool echo);
-typedef vector<string> vecStr;
+
 vecStr split(const string &s, char delim);
 template <class T>
 bool contains(vector<T> v, T item) {
@@ -200,7 +203,12 @@ bool contains(vector<T> v, T item) {
       return true;
    return false;
 }
+
 string read_file(string path);
+void write_machine_code(vector<u64> &asmb, string path);
+vector<u64> read_machine_code(string path);
+
+void print_hex_buff(uint8_t* buff, uint len, uint num_per_line);
 
 template <class T> u8 asm_cmp_helper(T a, T b) {
       if (a == b) return 0;

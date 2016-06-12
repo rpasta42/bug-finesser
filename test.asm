@@ -1,3 +1,5 @@
+; fib of 20 = 6765, on register 16
+
 ; return on register 16
 ; push argument (10) and return address on stack
 push 'exithalt

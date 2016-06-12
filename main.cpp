@@ -1,4 +1,5 @@
 #include "main.h"
+#include <fstream>
 
 struct Machine;
 void debug_machine_print(Machine &m);
@@ -198,17 +199,6 @@ struct Machine {
    return ret;
 }*/
 
-int test_machine();
-
-
-Machine load(vector<u64> machine_code) {
-   Machine m;
-   int i = 1;
-   for (auto cmd : machine_code)
-      m.mem[i++] = cmd;
-   return m;
-}
-
 void debug_machine_print(Machine &m) {
    cout << "registers: ";
    for (int i = 0; i < 20; i++)
@@ -224,10 +214,30 @@ void debug_machine_print(Machine &m) {
    cout << endl;
 }
 
+int test_machine();
+
+
+Machine load(vector<u64> machine_code) {
+   Machine m;
+   int i = 1;
+   for (auto cmd : machine_code)
+      m.mem[i++] = cmd;
+   return m;
+}
+
 int main(int nargs, char** args) {
    string asm_code = read_file(string(args[1]));
+
    vector<u64> machine_code = assemble(asm_code);
+
+   //write_machine_code(machine_code, "test.bin");
    Machine m = load(machine_code);
+
+   /*write_machine_code(machine_code, "test.bin");
+   vector<u64> test_machine_code = read_machine_code("test.bin");
+   write_machine_code(test_machine_code, "test.bin");
+   Machine m = load(test_machine_code);*/
+
    cout << "initial state:\n";
    debug_machine_print(m);
    cout << endl << "after execution:\n";
