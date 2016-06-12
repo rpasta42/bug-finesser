@@ -208,6 +208,7 @@ Machine load(vector<u64> machine_code) {
       m.mem[i++] = cmd;
    return m;
 }
+
 void debug_machine_print(Machine &m) {
    cout << "registers: ";
    for (int i = 0; i < 20; i++)
@@ -281,7 +282,6 @@ int test_machine() {
    //char c = getch();
    //testOp();
 }
-
 
 
 /*
