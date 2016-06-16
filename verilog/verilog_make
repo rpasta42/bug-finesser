@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo $PWD
+cd $PWD
+
+echo "Beginning compiling"
+
+verilator -sc $1
+cd obj_dir
+make -j -f Vour.mk Vour__ALL.a
+make -j -f Vour.mk ../sc_main.o verilated.o
+./Vout

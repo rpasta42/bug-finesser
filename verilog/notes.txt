@@ -1,0 +1,42 @@
+#good tutorial:
+#--https://www.veripool.org/projects/verilator/wiki/Documentation
+#--https://www.veripool.org/projects/verilator/wiki/Manual-verilator#EXAMPLE-C-EXECUTION
+#--https://www.veripool.org/projects/verilator/wiki/Manual-verilator#CONNECTING-TO-C
+#--http://www.asic-world.com/verilog/veritut.html
+
+
+#systemC
+#--https://en.wikipedia.org/wiki/SystemC
+#--http://accellera.org/downloads/standards/systemc
+
+#----------------------
+
+git clone http://git.veripool.org/git/verilator
+sudo apt-get install git make autoconf g++ flex bison
+cd verilator; autoconf; ./configure; make
+
+
+#go to this page and download systemC http://accellera.org/downloads/standards/systemc
+wget http://accellera.org/images/downloads/standards/systemc/systemc-2.3.1a.tar.gz
+
+cd systemC; ./configure; make -j5
+
+/usr/local/share/verilator/
+
+export VERILATOR_ROOT=/usr/local/share/verilator
+export SYSTEMC_INCLUDE=/home/kkostya/projects/verilator/systemC/systemc-2.3.1a/include
+export SYSTEMC_LIBDIR=/home/kkostya/projects/verilator/systemC/systemc-2.3.1a/lib-linux64
+
+verilator -sc ex1.v
+verilator -Wall --sc our.v
+
+#cd into their folder
+cd obj_dir
+
+make -j -f Vour.mk Vour__ALL.a
+make -j -f Vour.mk ../sc_main.o verilated.o
+
+
+export LD_LIBRARY_PATH=$SYSTEMC_LIBDIR:$LD_LIBRARY_PATH
+g++ -L$SYSTEMC_LIBDIR ../sc_main.o Vour__ALL*.o verilated.o -o Vour -lsystemc
+./Vour

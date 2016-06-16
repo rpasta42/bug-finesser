@@ -4,6 +4,10 @@
 struct Machine;
 void debug_machine_print(Machine &m);
 
+
+
+
+
 struct Machine {
    u64 mem[MACHINE_MEM];
    u64 r[NUM_REGISTERS];
@@ -245,20 +249,6 @@ int main(int nargs, char** args) {
    debug_machine_print(m);
 }
 
-int main1() {
-
-   string code = "mov %0 #15\nmov %1 #20\nmov @10 #42\nhalt";
-   vector<u64> parsed_asm = assemble(code);
-
-   Machine m = load(parsed_asm);
-   m.run();
-
-   debug_machine_print(m);
-   /*Instr i;
-   i.uint64 = parsed_asm[0];
-   Op(i.o).print();*/
-   test_machine();
-}
 
 int test_machine() {
    Machine m;
@@ -353,4 +343,19 @@ int testOp() {
    s.o = o;
 }*/
 
+
+int main1() {
+
+   string code = "mov %0 #15\nmov %1 #20\nmov @10 #42\nhalt";
+   vector<u64> parsed_asm = assemble(code);
+
+   Machine m = load(parsed_asm);
+   m.run();
+
+   debug_machine_print(m);
+   /*Instr i;
+   i.uint64 = parsed_asm[0];
+   Op(i.o).print();*/
+   test_machine();
+}
 
