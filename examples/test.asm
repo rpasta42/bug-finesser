@@ -1,5 +1,5 @@
-; jmp 'yo
+; jmp 'ha
 mov %0 #16
-label 'yo
+label 'ha
 halt
 ; comment tes
